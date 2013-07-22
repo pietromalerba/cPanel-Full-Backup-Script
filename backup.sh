@@ -38,11 +38,10 @@ N_BACKUPS=`ls -l $BACKUP_FOLDER | tail -n $N_BACKUPS | wc -l`
     let N_BACKUPS=$N_BACKUPS-1
   done
 
+BACKUP_DATE='mktemp /tmp/backup_date.XXXX'
 # exec php script
 php -q $PATH_SCRIPT
-
 # move the file to the backup folder
-echo "backup is coming"
-sleep 10m
-find . -type f -name "backup-*" -cmin 1 -exec mv {} $BACKUP_FOLDER/ \;
-echo "backup is done"
+echo "wait the the backup..."; sleep 8m;
+find $HOME -type f -name "backup-*" -newer $BACKUP_DATE -exec mv {} $BACKUP_FOLDER/ \;
+rm backup_time;echo "backup is done."
