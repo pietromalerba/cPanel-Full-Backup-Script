@@ -44,9 +44,9 @@ File setup:
 		
 Crontab:
 
-``backup.sh backup_daily``  
+``0	5	*	*	*	~/backups/backup.sh backup_daily`` # Backup every day at 5:00 
 
-``backup.sh backup_monthly``
+``0	3	1	*	*	~/backups/backup.sh backup_monthly`` # Backup first day of every month at 3:00
 
 
 
