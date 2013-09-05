@@ -1,19 +1,23 @@
 #!/bin/bash
 #############################
-# Shellscript backup. CHMOD  700.
+# Shellscript backup.
 # by @Kikobeats v1.0
 #############################
 
-[ $# -ne 1 ] && echo "Error. Only need 1 arguments (path where save the backup)." >&2 && exit 1
+[ $# -ne 2 ] && echo "Use: $0 <relative_path> <max_numbers_backups>" >&2 && exit 1
+echo $2 | grep -qx "[0-9]\+" || echo " Error. '$2' not is a number " >&2 && exit 1
+[[ "$1" = /* ]] && echo " Error. '$1' not is a relative path" >&2 && exit 1
 
 ################
 # CONFIG
 #################
 #
 # Max of Backups
-MAX_BACKUPS=5
+MAX_BACKUPS=$2
 # PATH Backup folder
 BACKUP_FOLDER="$HOME/backups/$1"
+[ -d $BACKUP_FOLDER ] || mkdir $BACKUP_FOLDER
+
 # PATH PHP Script
 PATH_SCRIPT="$HOME/backups/perform_cpanel_fullbackup.php"
 [ ! -e $PATH_SCRIPT ] && echo "Error. wrong PHP Script path (or not exist)." >&2 && exit 1
@@ -22,26 +26,25 @@ PATH_SCRIPT="$HOME/backups/perform_cpanel_fullbackup.php"
 # DON'T TOUCH MORE!
 # #################
 #
-# check folders for backups exists
-[ -d $BACKUP_FOLDER ] || mkdir $BACKUP_FOLDER
-#
-# check number of backups is correct
-N_BACKUPS=`ls -l $BACKUP_FOLDER | wc -l`
-let N_BACKUPS=$N_BACKUPS-1
-N_BACKUPS=`ls -l $BACKUP_FOLDER | tail -n $N_BACKUPS | wc -l`
 
-  while [ $N_BACKUPS -gt $MAX_BACKUPS ]
-  do
-    FIRST_FILE=`ls -l $BACKUP_FOLDER | head -2 | tail -1 | tr -s ' ' | cut -d ' ' -f 9`
-    rm $BACKUP_FOLDER/$FIRST_FILE
-    #echo "Delete the file $FIRST_FILE"
-    let N_BACKUPS=$N_BACKUPS-1
-  done
+FILE=(`ls -l | tail -n +2 | tr -s ' ' | cut -d ' ' -f 9| sort -u`)
+BACKUPS_EXIST=${#array[@]}
+COUNT=0
+
+while [ $BACKUPS_EXIST -gt $MAX_BACKUPS ]
+do
+  echo " Deleting '${FILE[$COUNT]}'..."
+  rm $BACKUP_FOLDER/${FILE[$COUNT]}
+  let --BACKUPS_EXIST
+  let ++COUNT
+done
 
 BACKUP_DATE='mktemp /tmp/backup_date.XXXX'
 # exec php script
 php -q $PATH_SCRIPT
 # move the file to the backup folder
-echo "wait the the backup..."; sleep 8m;
+echo " wait the the backup..."; sleep 10m;
 find $HOME -type f -name "backup-*" -newer $BACKUP_DATE -exec mv {} $BACKUP_FOLDER/ \;
-rm backup_time;echo "backup is done."
+
+rm $HOME/backup-*;
+echo " backup is done."
