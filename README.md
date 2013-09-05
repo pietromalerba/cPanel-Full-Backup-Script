@@ -19,7 +19,7 @@ FTP server is optionally (for replicate the backup).
 Control the number of backups and the dir for the backups:
 
 * Max_Backups
-* Backup_Folder (parameter)
+* Backup_Folder
 
 With this method can manage various types of backup while (weekly, monthly,...)
 
@@ -44,9 +44,9 @@ File setup:
 		
 Crontab:
 
-``0	5	*	*	*	~/backups/backup.sh backup_daily`` # Backup every day at 5:00 
+``0	5	*	*	*	~/backups/backup.sh backup_daily 10`` # Backup every day at 5:00. 10 max backups.
 
-``0	3	1	*	*	~/backups/backup.sh backup_monthly`` # Backup first day of every month at 3:00
+``0	3	1	*	*	~/backups/backup.sh backup_monthly 12`` # Backup first day of every month at 3:00
 
 
 
