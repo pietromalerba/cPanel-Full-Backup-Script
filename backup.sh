@@ -4,9 +4,9 @@
 # by @Kikobeats v1.0
 #############################
 
-[ $# -ne 2 ] && echo "Use: $0 <relative_path> <max_numbers_backups>" >&2 && exit 1
-echo $2 | grep -qx "[0-9]\+" || echo " Error. '$2' not is a number " >&2 && exit 1
-[[ "$1" = /* ]] && echo " Error. '$1' not is a relative path" >&2 && exit 1
+[ $# -ne 2 ] && echo "Use: $0 <relative_path> <max_numbers_backups>" >&2 && exit 1;
+echo $2 | grep -qx "[0-9]\+" || { echo " Error. '$2' not is a number " >&2 && exit 1; }
+[[ "$1" != /* ]] ||  { echo " Error. '$1' not is a relative path" >&2 && exit 1; }
 
 ################
 # CONFIG
@@ -39,12 +39,10 @@ do
   let ++COUNT
 done
 
-BACKUP_DATE='mktemp /tmp/backup_date.XXXX'
+#BACKUP_DATE='mktemp /tmp/backup_date.XXXX'
 # exec php script
 php -q $PATH_SCRIPT
 # move the file to the backup folder
 echo " wait the the backup..."; sleep 10m;
-find $HOME -type f -name "backup-*" -newer $BACKUP_DATE -exec mv {} $BACKUP_FOLDER/ \;
-
-rm $HOME/backup-*;
+find $HOME -type f -name "backup-*" -exec mv {} $BACKUP_FOLDER/ \;
 echo " backup is done."
