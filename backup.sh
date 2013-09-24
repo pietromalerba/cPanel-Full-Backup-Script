@@ -27,8 +27,8 @@ PATH_SCRIPT="$HOME/backups/perform_cpanel_fullbackup.php"
 # #################
 #
 
-FILE=(`ls -l | tail -n +2 | tr -s ' ' | cut -d ' ' -f 9| sort -u`)
-BACKUPS_EXIST=${#array[@]}
+FILE=(`ls -l $BACKUP_FOLDER | tail -n +2 | tr -s ' ' | cut -d ' ' -f 9| sort -u`)
+BACKUPS_EXIST=${#FILE[@]}
 COUNT=0
 
 while [ $BACKUPS_EXIST -gt $MAX_BACKUPS ]
